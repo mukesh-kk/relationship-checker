@@ -412,12 +412,26 @@ export default function RelationshipReflection() {
   const [answers, setAnswers] = useState({});
   const [step, setStep] = useState(0);
   const [animating, setAnimating] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [shaking, setShaking] = useState(false);
 
   function setAnswer(qid, val) {
     setAnswers((prev) => ({ ...prev, [qid]: val }));
+    setShowError(false);
   }
 
-  function navigate(dir) {
+  function navigate(dir, sectionRef) {
+    if (dir === 1 && sectionRef) {
+      const optQs = sectionRef.questions.filter((q) => q.type === "option");
+      const hasOne = optQs.some((q) => answers[q.id] !== undefined);
+      if (!hasOne) {
+        setShowError(true);
+        setShaking(true);
+        setTimeout(() => setShaking(false), 500);
+        return;
+      }
+    }
+    setShowError(false);
     setAnimating(true);
     setTimeout(() => { setStep((s) => s + dir); setAnimating(false); }, 220);
   }
@@ -454,6 +468,14 @@ export default function RelationshipReflection() {
         ${GOOGLE_FONTS}
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #fff8f4; }
+        @keyframes shake {
+          0%,100% { transform: translateX(0); }
+          20% { transform: translateX(-7px); }
+          40% { transform: translateX(7px); }
+          60% { transform: translateX(-5px); }
+          80% { transform: translateX(5px); }
+        }
+        .shake { animation: shake 0.45s ease; }
         @media (max-width: 480px) {
           .section-card { padding: 1.25rem !important; }
           .nav-row { gap: 0.5rem !important; }
@@ -554,7 +576,7 @@ export default function RelationshipReflection() {
                 color: ROMANTIC.muted, fontWeight: 400, fontSize: "0.97rem",
                 lineHeight: 1.85, maxWidth: "380px", margin: "0 auto 2rem",
               }}>
-                A quiet, private space to check in with yourself about your romantic relationship. <strong> No right answers — just honest ones.</strong>
+                A quiet, private space to check in with yourself about your romantic relationship.<strong>No right answers — just honest ones.</strong> 
               </p>
 
               <div style={{
@@ -641,7 +663,7 @@ export default function RelationshipReflection() {
                 display: "flex", justifyContent: "space-between",
                 alignItems: "center", marginTop: "1.25rem", gap: "0.75rem",
               }}>
-                <button className="nav-btn" onClick={() => navigate(-1)} style={{
+                <button className="nav-btn" onClick={() => navigate(-1, null)} style={{
                   background: "rgba(255,255,255,0.8)",
                   border: `1.5px solid rgba(232,99,122,0.2)`,
                   color: ROMANTIC.muted,
@@ -653,7 +675,7 @@ export default function RelationshipReflection() {
                   boxShadow: "0 2px 10px rgba(232,99,122,0.08)",
                 }}>← Back</button>
 
-                <button className="nav-btn" onClick={() => navigate(1)} style={{
+                <button className={`nav-btn${shaking ? " shake" : ""}`} onClick={() => navigate(1, currentSection)} style={{
                   background: `linear-gradient(135deg, ${currentSection.color}, ${currentSection.color}cc)`,
                   color: "#fff", border: "none",
                   padding: "0.7rem 1.75rem",
@@ -666,6 +688,32 @@ export default function RelationshipReflection() {
                   {step === sections.length ? "See My Insights 💫" : "Continue →"}
                 </button>
               </div>
+
+              {/* ── Validation error ── */}
+              {showError && (
+                <div style={{
+                  marginTop: "0.9rem",
+                  background: "linear-gradient(135deg, #fde8ed, #fdf0f8)",
+                  border: "1.5px solid rgba(232,99,122,0.35)",
+                  borderRadius: "50px",
+                  padding: "0.65rem 1.25rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                  animation: "shake 0.45s ease",
+                }}>
+                  <span style={{ fontSize: "1rem" }}>💗</span>
+                  <span style={{
+                    fontFamily: "'Nunito', sans-serif",
+                    fontSize: "0.83rem",
+                    fontWeight: 700,
+                    color: "#c0415a",
+                    lineHeight: 1.4,
+                  }}>
+                    Answer at least one question before moving on, love.
+                  </span>
+                </div>
+              )}
             </div>
           )}
 
