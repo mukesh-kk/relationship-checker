@@ -502,10 +502,10 @@ export default function RelationshipReflection() {
                 Relationship<br />Reflection
               </h1>
               <p style={{
-                color: "#7a6a60", fontWeight: 300, fontSize: "1rem",
+                color: "#7a6a60", fontWeight: 400, fontSize: "1rem",
                 lineHeight: 1.85, maxWidth: "400px", margin: "0 auto 2rem",
               }}>
-                A quiet, private space to check in with yourself about your romantic relationship. No right answers — just honest ones.
+                A quiet, private space to check in with yourself about your romantic relationship. <strong> No right answers — just honest ones.</strong>
               </p>
               <div style={{
                 background: "rgba(255,255,255,0.55)",
@@ -536,7 +536,7 @@ export default function RelationshipReflection() {
                 Begin Reflection →
               </button>
               <p style={{ marginTop: "1rem", fontSize: "0.75rem", color: "#b09080", fontWeight: 300 }}>
-                ~7 minutes · completely private
+                ~7 minutes · completely private 
               </p>
             </div>
           )}
