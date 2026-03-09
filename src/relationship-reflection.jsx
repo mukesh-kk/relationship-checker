@@ -433,6 +433,11 @@ export default function RelationshipReflection() {
     }
     setShowError(false);
     setAnimating(true);
+    document.body.scrollIntoView({
+  behavior: "smooth",
+  block: "start"
+});
+
     setTimeout(() => { setStep((s) => s + dir); setAnimating(false); }, 220);
   }
 
